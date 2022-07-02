@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,6 +25,11 @@ public class StartMenuController : MonoBehaviour
 
     public void BestScore()
     {
-        BestScoreText.text = $"Best Score by {globalController.name} is {globalController.highScorePoints}";
+        BestScoreText.text = $"Best Score by {globalController.playerName} is {globalController.highScorePoints}";
+    }
+
+    private void Start()
+    {
+        
     }
 }

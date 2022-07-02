@@ -55,7 +55,6 @@ public class MainManager : MonoBehaviour
         if (!m_Started)
         {
            
-
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 m_Started = true;
@@ -71,9 +70,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                string json = JsonUtility.ToJson(GlobalController.Instance);
-                Debug.Log(json);
-                File.WriteAllText(Application.dataPath + "/saveFile.json", json);
+                GlobalController.Instance.SaveScore();
 
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
@@ -89,6 +86,8 @@ public class MainManager : MonoBehaviour
         if (m_Points > highScore)
         {
             highScore = m_Points;
+            GlobalController.Instance.newBestPlayer();
+            gloabalname = GlobalController.Instance.GetName();
         }
 
         GlobalController.Instance.SetHighScorePoint(highScore);
