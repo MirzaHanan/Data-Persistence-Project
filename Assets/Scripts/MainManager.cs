@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,17 +12,26 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+    private string gloabalname = GlobalController.Instance.GetName();
+    private int globalhighScore = GlobalController.Instance.GetHighScorePoints();
 
-    
+    public int highScore = 0;
+
+ 
+
+
     // Start is called before the first frame update
     void Start()
     {
+        highScore = globalhighScore;
+        HighScoreText.text = $"Best Score by {gloabalname} is {globalhighScore}";
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -36,12 +46,16 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
     }
 
     private void Update()
     {
+      
         if (!m_Started)
         {
+           
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 m_Started = true;
@@ -57,6 +71,10 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                string json = JsonUtility.ToJson(GlobalController.Instance);
+                Debug.Log(json);
+                File.WriteAllText(Application.dataPath + "/saveFile.json", json);
+
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
@@ -66,8 +84,22 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+
+
+        if (m_Points > highScore)
+        {
+            highScore = m_Points;
+        }
+
+        GlobalController.Instance.SetHighScorePoint(highScore);
+
+        globalhighScore = GlobalController.Instance.GetHighScorePoints();
+
+        HighScoreText.text = $"Best Score by {gloabalname} is {globalhighScore}";
+
     }
 
+   
     public void GameOver()
     {
         m_GameOver = true;
